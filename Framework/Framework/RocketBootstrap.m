@@ -53,12 +53,12 @@ static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const 
     _rocketbootstrap_lookup_query_t *message = (_rocketbootstrap_lookup_query_t *)&buffer[0];
     memset(message, 0, sizeof(_rocketbootstrap_lookup_response_t));
     message->head.msgh_id = ROCKETBOOTSTRAP_LOOKUP_ID;
-    message->head.msgh_size = size;
+    message->head.msgh_size = (mach_msg_size_t)size;
     message->head.msgh_remote_port = servicesPort;
     message->head.msgh_local_port = replyPort;
     message->head.msgh_reserved = 0;
     message->head.msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE);
-    message->name_length = service_name_size;
+    message->name_length = (unsigned int)service_name_size;
     memcpy(&message->name[0], service_name, service_name_size);
     mach_msg_option_t options = MACH_SEND_MSG | MACH_RCV_MSG;
     

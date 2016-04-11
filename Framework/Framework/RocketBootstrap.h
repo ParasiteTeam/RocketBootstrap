@@ -15,5 +15,7 @@ FOUNDATION_EXPORT double RocketBootstrapVersionNumber;
 FOUNDATION_EXPORT const unsigned char RocketBootstrapVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <RocketBootstrap/PublicHeader.h>
+#import <RocketBootstrap/bootstrap.h>
+extern kern_return_t rocketbootstrap_unlock(const name_t service_name);
 
 

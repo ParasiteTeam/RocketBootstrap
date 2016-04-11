@@ -23,8 +23,6 @@ extern volatile OSSpinLock namesLock;
 
 extern void daemon_restarted_callback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
-extern kern_return_t rocketbootstrap_unlock(const name_t service_name);
-
 #endif
 
 extern void observe_rocketd(void);

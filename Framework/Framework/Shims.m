@@ -1,52 +1,52 @@
+//
+//  Shims.m
+//  RocketBootstrap
+//
+//  Created by Alexander Zielenski on 4/11/16.
+//  Copyright © 2016 Parasite. All rights reserved.
+//
+
+#import <ParasiteRuntime/ParasiteRuntime.h>
+#import <RocketBootstrap/RocketBootstrap.h>
+#import "bootstrap_priv.h"
 #import "rocketbootstrap_internal.h"
 
-#import <CaptainHook/CaptainHook.h>
-#import <libkern/OSAtomic.h>
-#import <substrate.h>
+#ifndef _SANDBOX_H_
+extern int sandbox_check(pid_t pid, const char *operation, enum sandbox_filter_type type, ...);
+#endif
 
-static OSSpinLock spin_lock;
-
-kern_return_t bootstrap_look_up3(mach_port_t bp, const name_t service_name, mach_port_t *sp, pid_t target_pid, const uuid_t instance_id, uint64_t flags) __attribute__((weak_import));
-kern_return_t (*_bootstrap_look_up3)(mach_port_t bp, const name_t service_name, mach_port_t *sp, pid_t target_pid, const uuid_t instance_id, uint64_t flags);
-
-kern_return_t $bootstrap_look_up3(mach_port_t bp, const name_t service_name, mach_port_t *sp, pid_t target_pid, const uuid_t instance_id, uint64_t flags)
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSMutableDictionary *threadDictionary = [NSThread currentThread].threadDictionary;
-	id obj = [threadDictionary objectForKey:@"rocketbootstrap_intercept_next_lookup"];
-	if (obj) {
-		[threadDictionary removeObjectForKey:@"rocketbootstrap_intercept_next_lookup"];
-		[pool drain];
-		return rocketbootstrap_look_up(bp, service_name, sp);
-	}
-	[pool drain];
-	return _bootstrap_look_up3(bp, service_name, sp, target_pid, instance_id, flags);
+int (*sandbox_check_old)(pid_t pid, const char *operation, enum sandbox_filter_type type, ...);
+int sandbox_check_new(pid_t pid, const char *operation, enum sandbox_filter_type type, ...) {
+    if (operation != NULL && strcmp("distributed-notification-post", operation) == 0)
+        return 0;
+    
+    va_list args;
+    va_start(args, type);
+    return sandbox_check_old(pid, operation, type, args);
 }
 
-static void hook_bootstrap_lookup(void)
-{
-	static bool hooked_bootstrap_look_up;
-	OSSpinLockLock(&spin_lock);
-	if (!hooked_bootstrap_look_up) {
-		MSHookFunction(bootstrap_look_up3, $bootstrap_look_up3, (void **)&_bootstrap_look_up3);
-		hooked_bootstrap_look_up = true;
-	}
-	OSSpinLockUnlock(&spin_lock);
+PSHook5(kern_return_t, bootstrap_look_up2, mach_port_t, bp, const name_t, service_name, mach_port_t *, sp, pid_t, target_pid, uint64_t, flags) {
+    @autoreleasepool {
+        if (NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"]) {
+            NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = nil;
+            return rocketbootstrap_look_up(bp, service_name, sp);
+        }
+    }
+    return PSOldCall(bp, service_name, sp, target_pid, flags);
 }
 
-CFMessagePortRef rocketbootstrap_cfmessageportcreateremote(CFAllocatorRef allocator, CFStringRef name)
-{
-	if (rocketbootstrap_is_passthrough())
-		return CFMessagePortCreateRemote(allocator, name);
-	hook_bootstrap_lookup();
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSMutableDictionary *threadDictionary = [NSThread currentThread].threadDictionary;
-	[threadDictionary setObject:(id)kCFBooleanTrue forKey:@"rocketbootstrap_intercept_next_lookup"];
-	CFMessagePortRef result = CFMessagePortCreateRemote(allocator, name);
-	[threadDictionary removeObjectForKey:@"rocketbootstrap_intercept_next_lookup"];
-	[pool drain];
-	return result;
+PSHook2(CFMessagePortRef, CFMessagePortCreateRemote, CFAllocatorRef, allocator, CFStringRef, name) {
+    if (rocketbootstrap_is_passthrough())
+        return PSOldCall(allocator, name);
+    
+    @autoreleasepool {
+        NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = @YES;
+        CFMessagePortRef res =  PSOldCall(allocator, name);
+        NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = nil;
+        return res;
+    }
 }
+
 
 kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messagePort)
 {
@@ -55,71 +55,15 @@ kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messageP
 	CFStringRef name = CFMessagePortGetName(messagePort);
 	if (!name)
 		return -1;
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	kern_return_t result = rocketbootstrap_unlock([(NSString *)name UTF8String]);
-	[pool drain];
-	return result;
+    @autoreleasepool {
+//        kern_return_t result = rocketbootstrap_unlock([(__bridge NSString *)name UTF8String]);
+        return KERN_SUCCESS;
+    }
 }
 
-@interface CPDistributedMessagingCenter : NSObject
-- (void)_setupInvalidationSource;
-@end
-
-%group messaging_center
-
-static bool has_hooked_messaging_center;
-
-%hook CPDistributedMessagingCenter
-
-- (mach_port_t)_sendPort
-{
-	if (objc_getAssociatedObject(self, &has_hooked_messaging_center)) {
-		mach_port_t *_sendPort = CHIvarRef(self, _sendPort, mach_port_t);
-		NSLock **_lock = CHIvarRef(self, _lock, NSLock *);
-		if (_sendPort && _lock) {
-			[*_lock lock];
-			mach_port_t result = *_sendPort;
-			if (result == MACH_PORT_NULL) {
-				NSString **_centerName = CHIvarRef(self, _centerName, NSString *);
-				if (_centerName && *_centerName && [self respondsToSelector:@selector(_setupInvalidationSource)]) {
-					mach_port_t bootstrap = MACH_PORT_NULL;
-					task_get_bootstrap_port(mach_task_self(), &bootstrap);
-					rocketbootstrap_look_up(bootstrap, [*_centerName UTF8String], _sendPort);
-					[self _setupInvalidationSource];
-					result = *_sendPort;
-				}
-			}
-			[*_lock unlock];
-			return result;
-		}
-	}
-	return %orig();
+ctor {
+    PSHookFunction(CFMessagePortCreateRemote);
+    PSHookFunction(bootstrap_look_up2);
+    PSHookFunctionPtr((void *)sandbox_check, (void *)sandbox_check_new, (void **)&sandbox_check_old);
 }
 
-- (void)runServerOnCurrentThreadProtectedByEntitlement:(id)entitlement
-{
-	if (objc_getAssociatedObject(self, &has_hooked_messaging_center)) {
-		NSString **_centerName = CHIvarRef(self, _centerName, NSString *);
-		if (_centerName && *_centerName) {
-			rocketbootstrap_unlock([*_centerName UTF8String]);
-		}
-	}
-	%orig();
-}
-
-%end
-
-%end
-
-void rocketbootstrap_distributedmessagingcenter_apply(CPDistributedMessagingCenter *messaging_center)
-{
-	if (rocketbootstrap_is_passthrough())
-		return;
-	OSSpinLockLock(&spin_lock);
-	if (!has_hooked_messaging_center) {
-		has_hooked_messaging_center = true;
-		%init(messaging_center);
-	}
-	OSSpinLockUnlock(&spin_lock);
-	objc_setAssociatedObject(messaging_center, &has_hooked_messaging_center, (id)kCFBooleanTrue, OBJC_ASSOCIATION_ASSIGN);
-}
