@@ -231,12 +231,12 @@
 		FA6359AE1CBB58A600560226 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks/;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
 				INFOPLIST_FILE = Tweak/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parasite.$(PRODUCT_NAME)";
 				PRODUCT_NAME = RocketBootstrap;
 				SKIP_INSTALL = YES;
@@ -247,12 +247,12 @@
 		FA6359AF1CBB58A600560226 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks/;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
 				INFOPLIST_FILE = Tweak/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parasite.$(PRODUCT_NAME)";
 				PRODUCT_NAME = RocketBootstrap;
 				SKIP_INSTALL = YES;
