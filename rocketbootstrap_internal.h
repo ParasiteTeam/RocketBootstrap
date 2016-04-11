@@ -4,7 +4,7 @@
 
 #define kRocketBootstrapService "com.apple.dock.notificationcenter"
 #define kRocketBootstrapUnlockService "com.rpetrich.rocketbootstrapd"
-#define ALWAYS_UNLOCKED 0
+#define ALWAYS_UNLOCKED 1
 #define ROCKETBOOTSTRAP_LOOKUP_ID -1
 #ifndef kCFCoreFoundationVersionNumber_iOS_5_0
     #define kCFCoreFoundationVersionNumber_iOS_5_0 UINT_MAX

@@ -1,49 +1,9 @@
 #import <ParasiteRuntime/ParasiteRuntime.h>
 
-#define LIGHTMESSAGING_USE_ROCKETBOOTSTRAP 0
-#import <rocketbootstrap_internal.h>
-
 #import <mach/mach.h>
 #import <libkern/OSAtomic.h>
 #import <libkern/OSCacheControl.h>
 #import "daemon.h"
-
-kern_return_t rocketbootstrap_unlock(const name_t service_name)
-{
-#if ALWAYS_UNLOCKED == 1
-    return KERN_SUCCESS;
-#else
-	if (rocketbootstrap_is_passthrough())
-		return 0;
-    
-    @autoreleasepool {
-        NSString *serviceNameString = [NSString stringWithUTF8String:service_name];
-        OSSpinLockLock(&namesLock);
-        BOOL containedName;
-        if (!allowedNames) {
-            allowedNames = [[NSMutableSet alloc] init];
-            [allowedNames addObject:serviceNameString];
-            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), &daemon_restarted_callback, daemon_restarted_callback, CFSTR("com.rpetrich.rocketd.started"), NULL, CFNotificationSuspensionBehaviorCoalesce);
-            containedName = NO;
-        } else {
-            containedName = [allowedNames containsObject:serviceNameString];
-            if (!containedName) {
-                [allowedNames addObject:serviceNameString];
-            }
-        }
-        OSSpinLockUnlock(&namesLock);
-        if (containedName) {
-            return 0;
-        }
-        // Ask rocketd to unlock it for us
-        int sandbox_result = sandbox_check(getpid(), "mach-lookup", SANDBOX_FILTER_LOCAL_NAME | SANDBOX_CHECK_NO_REPORT, kRocketBootstrapUnlockService);
-        if (sandbox_result) {
-            return sandbox_result;
-        }
-        return LMConnectionSendOneWay(&connection, 0, service_name, (uint32_t)strlen(service_name));
-    }
-#endif
-}
 
 static volatile OSSpinLock server_once_lock;
 static boolean_t (*server_once_demux_orig)(mach_msg_header_t *, mach_msg_header_t *);
@@ -145,5 +105,9 @@ PSHook4(mach_msg_return_t, mach_msg_server_once, RBDemuxCallback, demux, mach_ms
 // This tweak is used to allow other applications to piggy off of the dock's
 // privileged mach services
 ctor {
+#if ALWAYS_UNLOCKED != 1
+    observe_rocketd();
+#endif
+    
     PSHookFunction(mach_msg_server_once);
 }
