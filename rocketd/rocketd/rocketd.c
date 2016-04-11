@@ -1,5 +1,5 @@
 #import <notify.h>
-#import <CFLogUtilities.h>
+#import "CFLogUtilities.h"
 #define LIGHTMESSAGING_USE_ROCKETBOOTSTRAP 0
 #import "rocketbootstrap_internal.h"
 

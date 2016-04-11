@@ -13,6 +13,7 @@
 		FA6359EB1CBB6C8200560226 /* Shims.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359EA1CBB6C8200560226 /* Shims.m */; };
 		FA6359ED1CBB6E7C00560226 /* bootstrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359EC1CBB6E7C00560226 /* bootstrap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA6359F61CBBAA0600560226 /* daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359F41CBBAA0600560226 /* daemon.m */; };
+		FA6359F81CBBB10200560226 /* RocketBootstrap_dynamic.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359F71CBBB10200560226 /* RocketBootstrap_dynamic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		FA6359EA1CBB6C8200560226 /* Shims.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shims.m; sourceTree = "<group>"; };
 		FA6359EC1CBB6E7C00560226 /* bootstrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bootstrap.h; path = ../../LightMessaging/bootstrap.h; sourceTree = "<group>"; };
 		FA6359F41CBBAA0600560226 /* daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = daemon.m; sourceTree = "<group>"; };
+		FA6359F71CBBB10200560226 /* RocketBootstrap_dynamic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RocketBootstrap_dynamic.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 			children = (
 				FA6359BD1CBB599900560226 /* RocketBootstrap.h */,
 				FA6359E31CBB62C300560226 /* RocketBootstrap.m */,
+				FA6359F71CBBB10200560226 /* RocketBootstrap_dynamic.h */,
 				FA6359F41CBBAA0600560226 /* daemon.m */,
 				FA6359EC1CBB6E7C00560226 /* bootstrap.h */,
 				FA6359EA1CBB6C8200560226 /* Shims.m */,
@@ -78,6 +81,7 @@
 			files = (
 				FA6359BE1CBB599900560226 /* RocketBootstrap.h in Headers */,
 				FA6359ED1CBB6E7C00560226 /* bootstrap.h in Headers */,
+				FA6359F81CBBB10200560226 /* RocketBootstrap_dynamic.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

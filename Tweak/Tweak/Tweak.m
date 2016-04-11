@@ -1,11 +1,11 @@
 #import <ParasiteRuntime/ParasiteRuntime.h>
+#import "rocketbootstrap_internal.h"
 
 #import <mach/mach.h>
 #import <libkern/OSAtomic.h>
-#import "daemon.h"
-
 
 extern BOOL isDaemon;
+extern void observe_rocketd();
 
 static void new_demux(mach_msg_header_t *request)
 {
@@ -104,9 +104,7 @@ PSHook3(kern_return_t, bootstrap_check_in, mach_port_t, bp, const char *, servic
 ctor {
     isDaemon = YES;
 
-#if ALWAYS_UNLOCKED != 1
     observe_rocketd();
-#endif
     
     PSHookFunction(bootstrap_check_in);
     PSHookFunction(mach_msg);

@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		FA6359CE1CBB5A2E00560226 /* rocketd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = rocketd; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA6359D81CBB5A5D00560226 /* rocketd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rocketd.c; sourceTree = "<group>"; };
+		FA6359F91CBBB21C00560226 /* CFLogUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CFLogUtilities.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +58,7 @@
 		FA6359D01CBB5A2E00560226 /* rocketd */ = {
 			isa = PBXGroup;
 			children = (
+				FA6359F91CBBB21C00560226 /* CFLogUtilities.h */,
 				FA6359D81CBB5A5D00560226 /* rocketd.c */,
 			);
 			path = rocketd;
@@ -249,6 +251,7 @@
 				FA6359D71CBB5A2E00560226 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
