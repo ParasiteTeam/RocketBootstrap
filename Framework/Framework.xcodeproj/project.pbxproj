@@ -13,7 +13,7 @@
 		FA6359EB1CBB6C8200560226 /* Shims.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359EA1CBB6C8200560226 /* Shims.m */; };
 		FA6359ED1CBB6E7C00560226 /* bootstrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359EC1CBB6E7C00560226 /* bootstrap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA6359F61CBBAA0600560226 /* daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359F41CBBAA0600560226 /* daemon.m */; };
-		FA6359F81CBBB10200560226 /* RocketBootstrap_dynamic.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359F71CBBB10200560226 /* RocketBootstrap_dynamic.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FA6359F81CBBB10200560226 /* RocketBootstrap_dynamic.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359F71CBBB10200560226 /* RocketBootstrap_dynamic.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		FA635A041CBBB38000560226 /* rocketd in Resources */ = {isa = PBXBuildFile; fileRef = FA635A011CBBB36D00560226 /* rocketd */; };
 /* End PBXBuildFile section */
 
