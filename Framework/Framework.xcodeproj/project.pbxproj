@@ -12,7 +12,6 @@
 		FA6359E61CBB62E800560226 /* ParasiteRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6359E51CBB62E800560226 /* ParasiteRuntime.framework */; };
 		FA6359EB1CBB6C8200560226 /* Shims.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359EA1CBB6C8200560226 /* Shims.m */; };
 		FA6359ED1CBB6E7C00560226 /* bootstrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359EC1CBB6E7C00560226 /* bootstrap.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FA6359F51CBBAA0600560226 /* daemon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359F31CBBAA0600560226 /* daemon.h */; };
 		FA6359F61CBBAA0600560226 /* daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359F41CBBAA0600560226 /* daemon.m */; };
 /* End PBXBuildFile section */
 
@@ -24,7 +23,6 @@
 		FA6359E51CBB62E800560226 /* ParasiteRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParasiteRuntime.framework; path = ../../../../../../../Library/Frameworks/ParasiteRuntime.framework; sourceTree = "<group>"; };
 		FA6359EA1CBB6C8200560226 /* Shims.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shims.m; sourceTree = "<group>"; };
 		FA6359EC1CBB6E7C00560226 /* bootstrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bootstrap.h; path = ../../LightMessaging/bootstrap.h; sourceTree = "<group>"; };
-		FA6359F31CBBAA0600560226 /* daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = daemon.h; sourceTree = "<group>"; };
 		FA6359F41CBBAA0600560226 /* daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = daemon.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -62,7 +60,6 @@
 			children = (
 				FA6359BD1CBB599900560226 /* RocketBootstrap.h */,
 				FA6359E31CBB62C300560226 /* RocketBootstrap.m */,
-				FA6359F31CBBAA0600560226 /* daemon.h */,
 				FA6359F41CBBAA0600560226 /* daemon.m */,
 				FA6359EC1CBB6E7C00560226 /* bootstrap.h */,
 				FA6359EA1CBB6C8200560226 /* Shims.m */,
@@ -80,7 +77,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA6359BE1CBB599900560226 /* RocketBootstrap.h in Headers */,
-				FA6359F51CBBAA0600560226 /* daemon.h in Headers */,
 				FA6359ED1CBB6E7C00560226 /* bootstrap.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

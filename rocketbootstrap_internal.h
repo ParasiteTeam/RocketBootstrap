@@ -4,7 +4,6 @@
 
 #define kRocketBootstrapService "com.apple.dock.server"
 #define kRocketBootstrapUnlockService "com.parasite.rocketbootstrapd"
-#define ALWAYS_UNLOCKED 0
 #define ROCKETBOOTSTRAP_LOOKUP_ID -1
 #ifndef kCFCoreFoundationVersionNumber_iOS_5_0
     #define kCFCoreFoundationVersionNumber_iOS_5_0 0
