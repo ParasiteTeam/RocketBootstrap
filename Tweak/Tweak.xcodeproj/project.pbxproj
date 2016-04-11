@@ -8,14 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		FA6359A61CBB58A600560226 /* ParasiteRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6359A51CBB58A600560226 /* ParasiteRuntime.framework */; };
-		FA6359A91CBB58A600560226 /* Tweak.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359A81CBB58A600560226 /* Tweak.m */; };
+		FA6359DB1CBB5B9C00560226 /* Tweak.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359DA1CBB5B9C00560226 /* Tweak.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		FA6359A21CBB58A600560226 /* RocketBootstrap.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RocketBootstrap.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA6359A51CBB58A600560226 /* ParasiteRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParasiteRuntime.framework; path = Library/Frameworks/ParasiteRuntime.framework; sourceTree = DEVELOPER_DIR; };
-		FA6359A81CBB58A600560226 /* Tweak.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tweak.m; sourceTree = "<group>"; };
 		FA6359AA1CBB58A600560226 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA6359DA1CBB5B9C00560226 /* Tweak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweak.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +58,7 @@
 		FA6359A71CBB58A600560226 /* Tweak */ = {
 			isa = PBXGroup;
 			children = (
-				FA6359A81CBB58A600560226 /* Tweak.m */,
+				FA6359DA1CBB5B9C00560226 /* Tweak.m */,
 				FA6359AA1CBB58A600560226 /* Info.plist */,
 			);
 			path = Tweak;
@@ -130,7 +130,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA6359A91CBB58A600560226 /* Tweak.m in Sources */,
+				FA6359DB1CBB5B9C00560226 /* Tweak.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +224,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks/;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
 				INFOPLIST_FILE = Tweak/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parasite.$(PRODUCT_NAME)";
@@ -239,6 +240,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks/;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
 				INFOPLIST_FILE = Tweak/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parasite.$(PRODUCT_NAME)";
