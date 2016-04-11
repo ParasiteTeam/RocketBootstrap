@@ -33,6 +33,7 @@ PSHook1(void, _xpc_connection_init, xpc_connection_t, connection) {
             NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = @YES;
             PSOldCall(connection);
             NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = nil;
+            return;
         }
     }
     
