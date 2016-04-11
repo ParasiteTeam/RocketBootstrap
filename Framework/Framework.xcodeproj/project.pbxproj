@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		FA6359BE1CBB599900560226 /* RocketBootstrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359BD1CBB599900560226 /* RocketBootstrap.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FA6359E41CBB62C300560226 /* RocketBootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359E31CBB62C300560226 /* RocketBootstrap.m */; };
+		FA6359E41CBB62C300560226 /* RocketBootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359E31CBB62C300560226 /* RocketBootstrap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FA6359E61CBB62E800560226 /* ParasiteRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6359E51CBB62E800560226 /* ParasiteRuntime.framework */; };
-		FA6359EB1CBB6C8200560226 /* Shims.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359EA1CBB6C8200560226 /* Shims.m */; };
+		FA6359EB1CBB6C8200560226 /* Shims.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359EA1CBB6C8200560226 /* Shims.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FA6359ED1CBB6E7C00560226 /* bootstrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359EC1CBB6E7C00560226 /* bootstrap.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FA6359F61CBBAA0600560226 /* daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359F41CBBAA0600560226 /* daemon.m */; };
+		FA6359F61CBBAA0600560226 /* daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359F41CBBAA0600560226 /* daemon.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FA6359F81CBBB10200560226 /* RocketBootstrap_dynamic.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6359F71CBBB10200560226 /* RocketBootstrap_dynamic.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		FA635A041CBBB38000560226 /* rocketd in Resources */ = {isa = PBXBuildFile; fileRef = FA635A011CBBB36D00560226 /* rocketd */; };
 		FA7A68691CBBBED1005AA32D /* daemon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA7A68681CBBBECD005AA32D /* daemon.h */; };

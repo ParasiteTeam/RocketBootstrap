@@ -108,14 +108,6 @@ kern_return_t rocketbootstrap_unlock(const name_t service_name)
     }
 }
 
-void rocketbootstrap_xpc_connection_apply(xpc_connection_t connection) {
-    const char *name = xpc_connection_get_name(connection);
-    if (name == NULL)
-        return;
-    
-    rocketbootstrap_track_name(name);
-}
-
 kern_return_t rocketbootstrap_xpc_unlock(xpc_connection_t connection) {
     const char *name = xpc_connection_get_name(connection);
     if (name == NULL)

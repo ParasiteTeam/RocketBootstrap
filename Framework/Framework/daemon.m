@@ -19,7 +19,7 @@ void daemon_restarted_callback(CFNotificationCenterRef center, void *observer, C
 {
     @autoreleasepool {
         OSSpinLockLock(&namesLock);
-        NSSet *allNames = [allowedNames copy];
+        NSSet *allNames = [[allowedNames copy] autorelease];
         OSSpinLockUnlock(&namesLock);
         for (NSString *name in allNames) {
             const char *service_name = [name UTF8String];
@@ -143,21 +143,35 @@ static void process_terminate_callback(CFFileDescriptorRef fd, CFOptionFlags cal
     observe_rocketd();
 }
 
-void rocketbootstrap_track_name(const name_t service) {
-    OSSpinLockLock(&namesLock);
-    [allowedNames addObject:@(service)];
-    OSSpinLockUnlock(&namesLock);
+static CFMutableSetRef connections;
+static volatile OSSpinLock connectionsLock;
+
+void rocketbootstrap_track_connection(xpc_connection_t c) {
+    OSSpinLockLock(&connectionsLock);
+    if (connections == NULL && c != NULL) {
+        connections = CFSetCreateMutable(kCFAllocatorDefault,
+                                         0,
+                                         NULL);
+    }
+    CFSetAddValue(connections, (__bridge const void *)(c));
+    OSSpinLockUnlock(&connectionsLock);
 }
 
-void rocketbootstrap_untrack_name(const name_t service) {
-    OSSpinLockLock(&namesLock);
-    [allowedNames removeObject:@(service)];
-    OSSpinLockUnlock(&namesLock);
+void rocketbootstrap_untrack_connection(xpc_connection_t c) {
+    if (connections != NULL && c != NULL) {
+        OSSpinLockLock(&connectionsLock);
+        CFSetRemoveValue(connections, (__bridge const void *)(c));
+        OSSpinLockUnlock(&connectionsLock);
+    }
 }
 
-bool rocketbootstrap_is_tracking_name(const name_t service_name) {
-    OSSpinLockLock(&namesLock);
-    BOOL res = [allowedNames containsObject:@(service_name)];
-    OSSpinLockUnlock(&namesLock);
-    return res;
+bool rocketbootstrap_is_tracking_connection(xpc_connection_t c) {
+    if (connections != NULL && c != NULL) {
+        OSSpinLockLock(&connectionsLock);
+        bool res = CFSetContainsValue(connections, (__bridge const void *)(c));
+        OSSpinLockUnlock(&connectionsLock);
+        return res;
+    }
+    
+    return false;
 }
