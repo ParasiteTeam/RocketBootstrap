@@ -12,7 +12,7 @@ __BEGIN_DECLS
 
 #include <RocketBootstrap/bootstrap.h>
 
-#ifndef ROCKETBOOTSTRAP_LAOD_DYNAMIC
+#ifndef ROCKETBOOTSTRAP_LOAD_DYNAMIC
 kern_return_t rocketbootstrap_unlock(const name_t service_name);
 kern_return_t rocketbootstrap_look_up(mach_port_t bp, const name_t service_name, mach_port_t *sp);
 
