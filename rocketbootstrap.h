@@ -17,8 +17,8 @@ kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messageP
 #endif
 
 #ifdef __OBJC__
-@class CPDistributedMessagingCenter;
-void rocketbootstrap_distributedmessagingcenter_apply(CPDistributedMessagingCenter *messaging_center);
+@class NSDistributedNotificationCenter;
+void rocketbootstrap_distributednotificationcenter_apply(NSDistributedNotificationCenter *notification_center);
 #endif
 
 #else

@@ -209,6 +209,7 @@
 		FA6359D61CBB5A2E00560226 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -216,6 +217,7 @@
 		FA6359D71CBB5A2E00560226 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

@@ -3,8 +3,13 @@
 #import "rocketbootstrap.h"
 
 #define kRocketBootstrapUnlockService "com.rpetrich.rocketbootstrapd"
-
+#define ALWAYS_UNLOCKED 0
 #define ROCKETBOOTSTRAP_LOOKUP_ID -1
+
+#ifndef kCFCoreFoundationVersionNumber_iOS_5_0
+    #define kCFCoreFoundationVersionNumber_iOS_5_0 UINT_MAX
+#endif
+#import <LightMessaging/LightMessaging.h>
 
 typedef struct {
 	mach_msg_header_t head;
@@ -30,7 +35,5 @@ static LMConnection connection = {
 __attribute__((unused))
 static inline bool rocketbootstrap_is_passthrough(void)
 {
-	return kCFCoreFoundationVersionNumber < 800.0;
+    return false;
 }
-
-kern_return_t _rocketbootstrap_is_unlocked(const name_t service_name); // Errors if not in a privileged process such as SpringBoard or backboardd

@@ -1,7 +1,6 @@
 #import <notify.h>
-#import <CoreFoundation/CFLogUtilities.h>
+#import <CFLogUtilities.h>
 #define LIGHTMESSAGING_USE_ROCKETBOOTSTRAP 0
-
 #import "rocketbootstrap_internal.h"
 
 static CFMutableSetRef allowedNames;
