@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		FA6359A61CBB58A600560226 /* ParasiteRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6359A51CBB58A600560226 /* ParasiteRuntime.framework */; };
 		FA6359DB1CBB5B9C00560226 /* Tweak.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359DA1CBB5B9C00560226 /* Tweak.m */; };
-		FA6359DE1CBB5FEC00560226 /* daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6359DC1CBB5FEC00560226 /* daemon.m */; };
 		FA6359E01CBB624C00560226 /* RocketBootstrap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6359DF1CBB624C00560226 /* RocketBootstrap.framework */; };
 /* End PBXBuildFile section */
 
@@ -18,8 +17,6 @@
 		FA6359A51CBB58A600560226 /* ParasiteRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParasiteRuntime.framework; path = Library/Frameworks/ParasiteRuntime.framework; sourceTree = DEVELOPER_DIR; };
 		FA6359AA1CBB58A600560226 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6359DA1CBB5B9C00560226 /* Tweak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweak.m; sourceTree = "<group>"; };
-		FA6359DC1CBB5FEC00560226 /* daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = daemon.m; sourceTree = "<group>"; };
-		FA6359DD1CBB5FEC00560226 /* daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = daemon.h; sourceTree = "<group>"; };
 		FA6359DF1CBB624C00560226 /* RocketBootstrap.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RocketBootstrap.framework; path = ../Framework/build/Debug/RocketBootstrap.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,8 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				FA6359DA1CBB5B9C00560226 /* Tweak.m */,
-				FA6359DD1CBB5FEC00560226 /* daemon.h */,
-				FA6359DC1CBB5FEC00560226 /* daemon.m */,
 				FA6359AA1CBB58A600560226 /* Info.plist */,
 			);
 			path = Tweak;
@@ -140,7 +135,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA6359DB1CBB5B9C00560226 /* Tweak.m in Sources */,
-				FA6359DE1CBB5FEC00560226 /* daemon.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

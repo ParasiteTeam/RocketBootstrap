@@ -22,10 +22,10 @@ extern volatile OSSpinLock namesLock;
 #pragma GCC visibility pop
 
 extern void daemon_restarted_callback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
+extern void observe_rocketd(void);
 
 #endif
 
-extern void observe_rocketd(void);
 
 
 #endif /* daemon_h */

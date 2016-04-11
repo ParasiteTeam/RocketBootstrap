@@ -2,12 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:rocketd/rocketd.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Framework/Framework.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:/Users/Alex/Documents/Source/parasite/RocketBootstrap/Tweak/Tweak.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:rocketd/rocketd.xcodeproj">
    </FileRef>
 </Workspace>

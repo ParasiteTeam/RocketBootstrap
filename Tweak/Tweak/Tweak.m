@@ -2,18 +2,15 @@
 
 #import <mach/mach.h>
 #import <libkern/OSAtomic.h>
-#import <libkern/OSCacheControl.h>
 #import "daemon.h"
 
-static volatile OSSpinLock server_once_lock;
-static boolean_t (*server_once_demux_orig)(mach_msg_header_t *, mach_msg_header_t *);
-static bool continue_server_once;
 
-static boolean_t new_demux(mach_msg_header_t *request, mach_msg_header_t *reply)
+extern BOOL isDaemon;
+
+static void new_demux(mach_msg_header_t *request)
 {
 	// Highjack ROCKETBOOTSTRAP_LOOKUP_ID from the com.apple.ReportCrash.SimulateCrash demuxer
 	if (request->msgh_id == ROCKETBOOTSTRAP_LOOKUP_ID) {
-		continue_server_once = true;
 		_rocketbootstrap_lookup_query_t *lookup_message = (_rocketbootstrap_lookup_query_t *)request;
 		// Extract service name
 		size_t length = request->msgh_size - offsetof(_rocketbootstrap_lookup_query_t, name);
@@ -26,7 +23,7 @@ static boolean_t new_demux(mach_msg_header_t *request, mach_msg_header_t *reply)
 #else
         LMResponseBuffer buffer;
         if (LMConnectionSendTwoWay(&connection, 1, &lookup_message->name[0], (uint32_t)length, &buffer))
-			return false;
+			return;
 		BOOL nameIsAllowed = LMResponseConsumeInteger(&buffer) != 0;
 #endif
 
@@ -64,50 +61,53 @@ static boolean_t new_demux(mach_msg_header_t *request, mach_msg_header_t *reply)
 		} else {
 			response.body.msgh_descriptor_count = 0;
 		}
+        
 		// Send response
 		err = mach_msg(&response.head, MACH_SEND_MSG, response.head.msgh_size, 0, MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
 		if (err) {
 			if (servicePort != MACH_PORT_NULL)
 				mach_port_mod_refs(selfTask, servicePort, MACH_PORT_RIGHT_SEND, -1);
-			mach_port_mod_refs(selfTask, reply->msgh_remote_port, MACH_PORT_RIGHT_SEND_ONCE, -1);
+			mach_port_mod_refs(selfTask, request->msgh_remote_port, MACH_PORT_RIGHT_SEND_ONCE, -1);
 		}
-		return true;
 	}
-	return server_once_demux_orig(request, reply);
 }
 
-typedef boolean_t (*RBDemuxCallback)(mach_msg_header_t *, mach_msg_header_t *);
 
-PSHook4(mach_msg_return_t, mach_msg_server_once, RBDemuxCallback, demux, mach_msg_size_t, max_size, mach_port_t, rcv_name, mach_msg_options_t, options)
-{
-	// Highjack com.apple.ReportCrash.SimulateCrash's use of mach_msg_server_once
-	OSSpinLockLock(&server_once_lock);
-	if (!server_once_demux_orig) {
-		server_once_demux_orig = demux;
-		demux = new_demux;
-	} else if (server_once_demux_orig == demux) {
-		demux = new_demux;
-	} else {
-		OSSpinLockUnlock(&server_once_lock);
-		mach_msg_return_t result = PSOldCall(demux, max_size, rcv_name, options);
-		return result;
-	}
-	OSSpinLockUnlock(&server_once_lock);
-	mach_msg_return_t result;
-	do {
-		continue_server_once = false;
-		result = PSOldCall(demux, max_size, rcv_name, options);
-	} while (continue_server_once);
-	return result;
+static mach_port_t _sp;
+
+PSHook7(mach_msg_return_t, mach_msg, mach_msg_header_t *, msg, mach_msg_option_t, option, mach_msg_size_t, send_size, mach_msg_size_t, rcv_size, mach_port_name_t, rcv_name, mach_msg_timeout_t, timeout, mach_port_name_t, notify) {
+    mach_msg_return_t res = PSOldCall(msg, option, send_size, rcv_size, rcv_name, timeout, notify);
+    
+    if (msg->msgh_local_port == _sp && msg->msgh_id == ROCKETBOOTSTRAP_LOOKUP_ID) {
+        new_demux(msg);
+        
+        return PSOldCall(msg, option, send_size, rcv_size, rcv_name, timeout, notify);
+    }
+    
+    return res;
 }
 
+PSHook3(kern_return_t, bootstrap_check_in, mach_port_t, bp, const char *, service, mach_port_t *, sp) {
+    kern_return_t res = PSOldCall(bp, service, sp);
+    
+    if (res == KERN_SUCCESS &&
+        sp != NULL && _sp == 0 &&
+        service != NULL && strcmp(service, kRocketBootstrapService) == 0) {
+        _sp = *sp;
+    }
+    
+    return res;
+}
 
 // This tweak is used to allow other applications to piggy off of the dock's
 // privileged mach services
 ctor {
+    isDaemon = YES;
+
 #if ALWAYS_UNLOCKED != 1
     observe_rocketd();
 #endif
     
-    PSHookFunction(mach_msg_server_once);
+    PSHookFunction(bootstrap_check_in);
+    PSHookFunction(mach_msg);
 }

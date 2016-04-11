@@ -26,7 +26,7 @@ kern_return_t rocketbootstrap_unlock(const name_t service_name)
         if (!allowedNames) {
             allowedNames = [[NSMutableSet alloc] init];
             [allowedNames addObject:serviceNameString];
-            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), &daemon_restarted_callback, daemon_restarted_callback, CFSTR("com.rpetrich.rocketd.started"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), &daemon_restarted_callback, daemon_restarted_callback, CFSTR("com.parasite.rocketd.started"), NULL, CFNotificationSuspensionBehaviorCoalesce);
             containedName = NO;
         } else {
             containedName = [allowedNames containsObject:serviceNameString];
@@ -124,7 +124,7 @@ void observe_rocketd(void)
     mach_port_t self = mach_task_self();
     task_get_bootstrap_port(self, &bootstrap);
     mach_port_t servicesPort = MACH_PORT_NULL;
-    kern_return_t err = bootstrap_look_up(bootstrap, "com.rpetrich.rocketbootstrapd", &servicesPort);
+    kern_return_t err = bootstrap_look_up(bootstrap, kRocketBootstrapUnlockService, &servicesPort);
     if (err) {
         //NSLog(@"RocketBootstrap: failed to launch rocketd!");
     } else {

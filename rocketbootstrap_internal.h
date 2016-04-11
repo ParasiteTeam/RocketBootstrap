@@ -2,12 +2,12 @@
 
 #import "rocketbootstrap.h"
 
-#define kRocketBootstrapService "com.apple.dock.notificationcenter"
-#define kRocketBootstrapUnlockService "com.rpetrich.rocketbootstrapd"
-#define ALWAYS_UNLOCKED 1
+#define kRocketBootstrapService "com.apple.dock.server"
+#define kRocketBootstrapUnlockService "com.parasite.rocketbootstrapd"
+#define ALWAYS_UNLOCKED 0
 #define ROCKETBOOTSTRAP_LOOKUP_ID -1
 #ifndef kCFCoreFoundationVersionNumber_iOS_5_0
-    #define kCFCoreFoundationVersionNumber_iOS_5_0 UINT_MAX
+    #define kCFCoreFoundationVersionNumber_iOS_5_0 0
 #endif
 #import <LightMessaging/LightMessaging.h>
 

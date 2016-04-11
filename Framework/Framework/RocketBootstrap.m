@@ -10,13 +10,11 @@
 #import <ParasiteRuntime/ParasiteRuntime.h>
 #import "rocketbootstrap_internal.h"
 
-static BOOL isDaemon() {
-    return [[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.dock"];
-}
+BOOL isDaemon;
 
 static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const name_t service_name, mach_port_t *sp, mach_msg_timeout_t timeout)
 {
-    if (rocketbootstrap_is_passthrough() || isDaemon()) {
+    if (rocketbootstrap_is_passthrough() || isDaemon) {
         if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_5_0) {
             int sandbox_result = sandbox_check(getpid(), "mach-lookup", SANDBOX_FILTER_LOCAL_NAME | SANDBOX_CHECK_NO_REPORT, service_name);
             if (sandbox_result) {
@@ -30,8 +28,9 @@ static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const 
     mach_port_t servicesPort = MACH_PORT_NULL;
     kern_return_t err = bootstrap_look_up(bp, kRocketBootstrapService, &servicesPort);
     
-    if (err)
+    if (err) {
         return err;
+    }
     
     mach_port_t selfTask = mach_task_self();
     // Create a reply port
@@ -67,7 +66,7 @@ static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const 
     } else {
         options |= MACH_SEND_TIMEOUT | MACH_RCV_TIMEOUT;
     }
-    err = mach_msg(&message->head, options, size, size, replyPort, timeout, MACH_PORT_NULL);
+    err = mach_msg(&message->head, options, (mach_msg_size_t)size, (mach_msg_size_t)size, replyPort, timeout, MACH_PORT_NULL);
     
     // Parse response
     if (!err) {
@@ -78,6 +77,8 @@ static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const 
             err = 1;
     }
     
+    NSLog(@"RocketBootstrap FUK4 0x%x", err);
+    
     // Cleanup
     mach_port_deallocate(selfTask, servicesPort);
     mach_port_deallocate(selfTask, replyPort);
@@ -87,3 +88,5 @@ static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const 
 kern_return_t rocketbootstrap_look_up(mach_port_t bp, const name_t service_name, mach_port_t *sp) {
     return rocketbootstrap_look_up_with_timeout(bp, service_name, sp, LIGHTMESSAGING_TIMEOUT);
 }
+
+

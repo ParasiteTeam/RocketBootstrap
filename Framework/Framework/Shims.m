@@ -11,28 +11,15 @@
 #import "bootstrap_priv.h"
 #import "rocketbootstrap_internal.h"
 
-#ifndef _SANDBOX_H_
-extern int sandbox_check(pid_t pid, const char *operation, enum sandbox_filter_type type, ...);
-#endif
-
-int (*sandbox_check_old)(pid_t pid, const char *operation, enum sandbox_filter_type type, ...);
-int sandbox_check_new(pid_t pid, const char *operation, enum sandbox_filter_type type, ...) {
-    if (operation != NULL && strcmp("distributed-notification-post", operation) == 0)
-        return 0;
-    
-    va_list args;
-    va_start(args, type);
-    return sandbox_check_old(pid, operation, type, args);
-}
-
-PSHook5(kern_return_t, bootstrap_look_up2, mach_port_t, bp, const name_t, service_name, mach_port_t *, sp, pid_t, target_pid, uint64_t, flags) {
+kern_return_t bootstrap_look_up3(mach_port_t bp, const name_t service_name, mach_port_t *sp, pid_t target_pid, const uuid_t instance_id, uint64_t flags) __attribute__((weak_import));
+PSHook6(kern_return_t, bootstrap_look_up3, mach_port_t, bp, const name_t, service_name, mach_port_t *, sp, pid_t, target_pid, const uuid_t, instance_id, uint64_t, flags) {
     @autoreleasepool {
         if (NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"]) {
             NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = nil;
             return rocketbootstrap_look_up(bp, service_name, sp);
         }
     }
-    return PSOldCall(bp, service_name, sp, target_pid, flags);
+    return PSOldCall(bp, service_name, sp, target_pid, instance_id, flags);
 }
 
 PSHook2(CFMessagePortRef, CFMessagePortCreateRemote, CFAllocatorRef, allocator, CFStringRef, name) {
@@ -56,14 +43,13 @@ kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messageP
 	if (!name)
 		return -1;
     @autoreleasepool {
-//        kern_return_t result = rocketbootstrap_unlock([(__bridge NSString *)name UTF8String]);
-        return KERN_SUCCESS;
+        kern_return_t result = rocketbootstrap_unlock([(__bridge NSString *)name UTF8String]);
+        return result;
     }
 }
 
 ctor {
     PSHookFunction(CFMessagePortCreateRemote);
-    PSHookFunction(bootstrap_look_up2);
-    PSHookFunctionPtr((void *)sandbox_check, (void *)sandbox_check_new, (void **)&sandbox_check_old);
+    PSHookFunction(bootstrap_look_up3);
 }
 

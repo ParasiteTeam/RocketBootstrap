@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 {
 	allowedNames = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
 	LMCheckInService(connection.serverName, CFRunLoopGetCurrent(), machPortCallback, NULL);
-	notify_post("com.rpetrich.rocketd.started");
+	notify_post("com.parasite.rocketd.started");
 	CFRunLoopRun();
 	return 0;
 }
