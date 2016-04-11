@@ -212,10 +212,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
-				OTHER_LDFLAGS = (
-					"-read_only_relocs",
-					suppress,
-				);
+				INSTALL_PATH = /Library/Frameworks/RocketBootstrap.framework/Resources;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -224,10 +222,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../";
-				OTHER_LDFLAGS = (
-					"-read_only_relocs",
-					suppress,
-				);
+				INSTALL_PATH = /Library/Frameworks/RocketBootstrap.framework/Resources;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

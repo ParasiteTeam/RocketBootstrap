@@ -76,9 +76,7 @@ static kern_return_t rocketbootstrap_look_up_with_timeout(mach_port_t bp, const 
         else
             err = 1;
     }
-    
-    NSLog(@"RocketBootstrap FUK4 0x%x", err);
-    
+       
     // Cleanup
     mach_port_deallocate(selfTask, servicesPort);
     mach_port_deallocate(selfTask, replyPort);

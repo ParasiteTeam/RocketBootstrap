@@ -7,7 +7,4 @@
    <FileRef
       location = "group:/Users/Alex/Documents/Source/parasite/RocketBootstrap/Tweak/Tweak.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:rocketd/rocketd.xcodeproj">
-   </FileRef>
 </Workspace>
