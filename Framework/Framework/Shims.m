@@ -22,18 +22,17 @@ PSHook6(kern_return_t, bootstrap_look_up3, mach_port_t, bp, const name_t, servic
     return PSOldCall(bp, service_name, sp, target_pid, instance_id, flags);
 }
 
-PSHook2(CFMessagePortRef, CFMessagePortCreateRemote, CFAllocatorRef, allocator, CFStringRef, name) {
+CFMessagePortRef rocketbootstrap_cfmessageportcreateremote(CFAllocatorRef allocator, CFStringRef name) {
     if (rocketbootstrap_is_passthrough())
-        return PSOldCall(allocator, name);
+        return CFMessagePortCreateRemote(allocator, name);
     
     @autoreleasepool {
         NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = @YES;
-        CFMessagePortRef res =  PSOldCall(allocator, name);
+        CFMessagePortRef res =  CFMessagePortCreateRemote(allocator, name);
         NSThread.currentThread.threadDictionary[@"rocketbootstrap_intercept_next_lookup"] = nil;
         return res;
     }
 }
-
 
 kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messagePort)
 {
@@ -49,7 +48,6 @@ kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messageP
 }
 
 ctor {
-    PSHookFunction(CFMessagePortCreateRemote);
     PSHookFunction(bootstrap_look_up3);
 }
 
