@@ -18,14 +18,10 @@ static void new_demux(mach_msg_header_t *request)
 			length = lookup_message->name_length;
 		}
 		// Ask rocketd if it's unlocked
-#if ALWAYS_UNLOCKED == 1
-        BOOL nameIsAllowed = YES;
-#else
         LMResponseBuffer buffer;
         if (LMConnectionSendTwoWay(&connection, 1, &lookup_message->name[0], (uint32_t)length, &buffer))
 			return;
 		BOOL nameIsAllowed = LMResponseConsumeInteger(&buffer) != 0;
-#endif
 
 		// Lookup service port
 		mach_port_t servicePort = MACH_PORT_NULL;
