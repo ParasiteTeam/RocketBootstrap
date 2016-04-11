@@ -11,10 +11,13 @@
 #import <LightMessaging/LightMessaging.h>
 
 typedef struct {
-	mach_msg_header_t head;
-	mach_msg_body_t body;
-	uint32_t name_length;
-	char name[];
+    mach_msg_header_t head;
+    mach_msg_body_t body;
+    pid_t target_pid;
+    uuid_t instance_id;
+    uint64_t flags;
+    uint32_t name_length;
+    char name[];
 } _rocketbootstrap_lookup_query_t;
 
 typedef struct {

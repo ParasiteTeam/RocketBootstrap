@@ -23,6 +23,10 @@ kern_return_t rocketbootstrap_cfmessageportexposelocal(CFMessagePortRef messageP
 
 #endif
 
+#ifdef XPC_API_VERSION
+void rocketbootstrap_xpc_connection_apply(xpc_connection_t connection);
+kern_return_t rocketbootstrap_xpc_unlock(xpc_connection_t listener);
+#endif
 #else
 
 #include <RocketBootstrap/RocketBootstrap_dynamic.h>

@@ -15,7 +15,7 @@
 static NSMutableSet *allowedNames;
 static volatile OSSpinLock namesLock;
 
-static void daemon_restarted_callback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+void daemon_restarted_callback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     @autoreleasepool {
         OSSpinLockLock(&namesLock);
@@ -28,7 +28,7 @@ static void daemon_restarted_callback(CFNotificationCenterRef center, void *obse
     }
 }
 
-pid_t pid_of_process(const char *process_name)
+static pid_t pid_of_process(const char *process_name)
 {
     int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
     size_t miblen = 4;
@@ -78,7 +78,7 @@ static int daemon_die_queue;
 static CFFileDescriptorRef daemon_die_fd;
 static CFRunLoopSourceRef daemon_die_source;
 
-void process_terminate_callback(CFFileDescriptorRef fd, CFOptionFlags callBackTypes, void *info);
+static void process_terminate_callback(CFFileDescriptorRef fd, CFOptionFlags callBackTypes, void *info);
 
 void observe_rocketd(void)
 {
@@ -130,7 +130,7 @@ void observe_rocketd(void)
     }
 }
 
-void process_terminate_callback(CFFileDescriptorRef fd, CFOptionFlags callBackTypes, void *info)
+static void process_terminate_callback(CFFileDescriptorRef fd, CFOptionFlags callBackTypes, void *info)
 {
     struct kevent event;
     (void)kevent(daemon_die_queue, NULL, 0, &event, 1, NULL);
@@ -143,35 +143,21 @@ void process_terminate_callback(CFFileDescriptorRef fd, CFOptionFlags callBackTy
     observe_rocketd();
 }
 
-kern_return_t rocketbootstrap_unlock(const name_t service_name)
-{
-    if (rocketbootstrap_is_passthrough())
-        return 0;
-    
-    @autoreleasepool {
-        NSString *serviceNameString = [NSString stringWithUTF8String:service_name];
-        OSSpinLockLock(&namesLock);
-        BOOL containedName;
-        if (!allowedNames) {
-            allowedNames = [[NSMutableSet alloc] init];
-            [allowedNames addObject:serviceNameString];
-            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), &daemon_restarted_callback, daemon_restarted_callback, CFSTR("com.parasite.rocketd.started"), NULL, CFNotificationSuspensionBehaviorCoalesce);
-            containedName = NO;
-        } else {
-            containedName = [allowedNames containsObject:serviceNameString];
-            if (!containedName) {
-                [allowedNames addObject:serviceNameString];
-            }
-        }
-        OSSpinLockUnlock(&namesLock);
-        if (containedName) {
-            return 0;
-        }
-        // Ask rocketd to unlock it for us
-        int sandbox_result = sandbox_check(getpid(), "mach-lookup", SANDBOX_FILTER_LOCAL_NAME | SANDBOX_CHECK_NO_REPORT, kRocketBootstrapUnlockService);
-        if (sandbox_result) {
-            return sandbox_result;
-        }
-        return LMConnectionSendOneWay(&connection, 0, service_name, (uint32_t)strlen(service_name));
-    }
+void rocketbootstrap_track_name(const name_t service) {
+    OSSpinLockLock(&namesLock);
+    [allowedNames addObject:@(service)];
+    OSSpinLockUnlock(&namesLock);
+}
+
+void rocketbootstrap_untrack_name(const name_t service) {
+    OSSpinLockLock(&namesLock);
+    [allowedNames removeObject:@(service)];
+    OSSpinLockUnlock(&namesLock);
+}
+
+bool rocketbootstrap_is_tracking_name(const name_t service_name) {
+    OSSpinLockLock(&namesLock);
+    BOOL res = [allowedNames containsObject:@(service_name)];
+    OSSpinLockUnlock(&namesLock);
+    return res;
 }
